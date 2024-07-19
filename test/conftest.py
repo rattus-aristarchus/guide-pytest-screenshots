@@ -3,7 +3,7 @@ import os
 import allure
 import pytest
 
-import dotenv
+
 from allure_commons.types import AttachmentType
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
@@ -18,7 +18,7 @@ def driver():
 
     yield driver
 
-    driver.close()
+    driver.quit()
 
 
 def pytest_addoption(parser):
@@ -39,20 +39,20 @@ def pytest_addoption(parser):
 def pytest_exception_interact(node, call, report):
     web_driver = None
     for fixture_name in node.fixturenames:
-        fixture = node.funcargs[fixture_name]
-        if isinstance(fixture, WebDriver):
-            web_driver = fixture
-            break
+        if fixture_name in node.funcargs.keys():
+            fixture = node.funcargs[fixture_name]
+            if isinstance(fixture, WebDriver):
+                web_driver = fixture
+                break
 
-    if not web_driver:
-       yield
+    if web_driver:
+        png = web_driver.get_screenshot_as_png()
+        allure.attach(
+            png,
+            name='screenshot on failure',
+            attachment_type=AttachmentType.PNG
+        )
 
-    png = web_driver.get_screenshot_as_png()
-    allure.attach(
-        png,
-        name='screenshot on failure',
-        attachment_type=AttachmentType.PNG
-    )
-
+    yield
    # web_driver.get_screenshot_as_file("/home/rattus-aristarchus/code/python/stackoverflow/generic_report/screenshots/on_failure.png")
 

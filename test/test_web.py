@@ -13,7 +13,7 @@ def test_main_page_title_should_have_word_in_title(driver):
         attach_screenshot(driver)
 
     with allure.step("Look for a phrase in the title"):
-        assert "Software testing" in driver.title
+        assert "Bad search" in driver.title
 
 
 @allure.severity(severity_level=Severity.CRITICAL)
