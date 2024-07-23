@@ -10,9 +10,9 @@ RES_DIR = os.path.join(BASE_DIR, "resources")
 
 
 @pytest.fixture
-def context(playwright):
-    browser = playwright.chromium.launch(headless=False,args=["--start-maximized"])
-    context = browser.new_context(no_viewport=False)
+def custom_page(playwright):
+    browser = playwright.chromium.launch()
+    context = browser.new_context()
     page = context.new_page()
     yield page
 
