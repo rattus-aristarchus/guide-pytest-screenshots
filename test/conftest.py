@@ -7,6 +7,7 @@ import pytest
 from allure_commons.types import AttachmentType
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.remote.webdriver import BaseWebDriver
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 RES_DIR = os.path.join(BASE_DIR, "resources")
@@ -37,16 +38,16 @@ def pytest_addoption(parser):
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_exception_interact(node, call, report):
-    web_driver = None
+    screenshot_source = None
     for fixture_name in node.fixturenames:
         if fixture_name in node.funcargs.keys():
             fixture = node.funcargs[fixture_name]
-            if isinstance(fixture, WebDriver):
-                web_driver = fixture
+            if isinstance(fixture, BaseWebDriver):
+                screenshot_source = fixture
                 break
 
-    if web_driver:
-        png = web_driver.get_screenshot_as_png()
+    if screenshot_source:
+        png = screenshot_source.get_screenshot_as_png()
         allure.attach(
             png,
             name='screenshot on failure',
