@@ -163,6 +163,9 @@ cython_debug/
 
 # allure plugin output
 /allure-results
+*/allure-results
 
 # allure report
 /allure-report
+
+/.idea
